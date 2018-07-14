@@ -1,5 +1,6 @@
 import re
 
+import unicode
 from khard import khard, config
 from deoplete.source.base import Base
 
@@ -26,6 +27,19 @@ class Source(Base):
         return max(
             colon.end() if colon is not None else -1,
             comma.end() if comma is not None else -1)
+
+    def remove_accents(string):
+        if type(string) is not unicode:
+            string = unicode(string, encoding='utf-8')
+
+        string = re.sub(u"[àáâãäå]", 'a', string)
+        string = re.sub(u"[èéêë]", 'e', string)
+        string = re.sub(u"[ìíîï]", 'i', string)
+        string = re.sub(u"[òóôõö]", 'o', string)
+        string = re.sub(u"[ùúûü]", 'u', string)
+        string = re.sub(u"[ýÿ]", 'y', string)
+
+        return string
 
     def gather_candidates(self, context):
         if HEADER_PATTERN.search(context['input']):
