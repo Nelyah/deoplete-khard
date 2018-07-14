@@ -1,6 +1,5 @@
 import re
 
-import unicode
 from khard import khard, config
 from deoplete.source.base import Base
 
@@ -29,9 +28,6 @@ class Source(Base):
             comma.end() if comma is not None else -1)
 
     def remove_accents(string):
-        if type(string) is not unicode:
-            string = unicode(string, encoding='utf-8')
-
         string = re.sub(u"[àáâãäå]", 'a', string)
         string = re.sub(u"[èéêë]", 'e', string)
         string = re.sub(u"[ìíîï]", 'i', string)
@@ -58,4 +54,4 @@ class Source(Base):
             for type, email_list in vcard.get_email_addresses().items():
                 for email in email_list:
                     self.__cache.append({'word': "{0} <{1}>".format(
-                                vcard.get_first_name_last_name(), email)})
+                                self.remove_accents(vcard.get_first_name_last_name()), email)})
